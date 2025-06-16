@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>program for quiz</title>
+<style>
+#contain{
+      background: aqua;
+      border-radius: 20px;
+      padding: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 20px ;}
+#buttonbox{
+        display:flex;
+        justify-content:center;
+        }
+  button{
+      height:30px;
+      width:80px;
+      background-color:pink;
+      border-radius:10px;
+      box-shadow:0 0 2px;}
+ #time{
+      text-align:center;
+      color:red;
+      }
+</style>
+</head>
+<body>
+<div id="contain">
+<div id="infobox">
+  <h1>Student Fill Your Info And Then Start Your Test</h1><hr>
+  Enter name &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="text" id="n"><br><br>
+  Enter fat'sname <input type="text" id="f"><br><br>
+  <center><button onclick="submitinfo();">Start Quiz</button></center>
+</div>
+<div id="quizbox" style="display:none">
+<h2 id="time">TIME:60</h2>
+  <h1 id="question"></h1>
+  <div id="option"></div>
+  <div id="buttonbox">
+    <button onclick="prevquestion();">Prev</button>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+     <button onclick="nextquestion();">Next</button>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+      <button onclick="submitquestion();">Submit</button>
+  </div>
+  <h3 id="result"></h3>
+</div></div>
+<script>
+var quizdata = [
+  {
+    question: "1. What is Python?",
+    option: ["interpreted", "compiler", "assembler","none of the above"],
+    correct: "interpreted"
+  },
+  {
+    question: "2. What is output of 2>>1?",
+    option: ["2", "3", "1","all of these"],
+    correct: "1"
+  },
+  {
+    question: "3. a = 'suwansa'; print(a[::-1])?",
+    option: ["uswansa", "asnawus", "suwansa","none of these"],
+    correct: "asnawus"
+  },
+  {
+  question: "4. who develop python language?",
+  option: ["denis ritchie", "guido van rossum","bjourne","none of these"],
+  correct: "guido van rossum"
+  },
+  {
+  question: "5. def keyword  is used for?",
+  option: ["create method", "create function","create object","create variable"],
+  correct: "create function"
+  },
+  {
+  question: "6. what is break statement?",
+  option: ["break function", "break loop","break method","none of these"],
+  correct: "break loop"
+  },
+  {
+  question: "7. a='prayagraj' print(a[1:-2:-1])",
+  option: ["raygraj", "jargayarp","rayagra","none of these"],
+  correct: "none of these"
+  },
+  {
+  question: "8. what types of list in python?",
+  option: ["immutable", "mutable","variable","none of these"],
+  correct: "mutable"
+  },
+  
+  {
+  question: "9. print(type('5.6'))",
+  option: ["int", "float","string","list"],
+  correct: "string"
+  },
+  {
+  question: "10. which of these is special literal?",
+  option: ["True", "False","dict","none"],
+  correct: "none"
+  }
+];
+var name="",fathername="";
+var questionindex=0;
+var t=60;
+var tm;
+var answer=Array(quizdata.length).fill(null);
+function submitinfo(){
+     name=document.getElementById("n").value;
+     fathername=document.getElementById("f").value;
+     if(name=="" || fathername=="")
+       {alert("please fill both name and fathername");
+        return;}
+     document.getElementById("infobox").style.display="none";
+     document.getElementById("quizbox").style.display="block";
+     loadquestion();
+     settimer();
+  }
+function loadquestion(){
+       var item=quizdata[questionindex];
+      document.getElementById("question").innerHTML=item.question;
+      var makeoption=item.option.map(opt=>`
+      <div>
+      <input type="radio" name="o" value="${opt}" ${answer[questionindex]==opt ? 'checked':''}> ${opt}
+     
+      </div><br>
+      `).join("");
+      document.getElementById("option").innerHTML=makeoption;
+  }
+ function updateanswer() 
+ {
+ const selected = document.querySelector('input[name="o"]:checked');
+ if (selected) {
+ answer[questionindex] = selected.value;
+ }}
+function nextquestion(){
+       updateanswer();
+      if(questionindex<quizdata.length-1)
+      {questionindex++;
+      loadquestion();}
+  }
+  function prevquestion(){
+  updateanswer();
+  if(questionindex>0)
+  {questionindex--;
+  loadquestion();}
+  }
+ function settimer(){
+    tm=setInterval(()=>{
+     t--;
+     document.getElementById("time").innerHTML="TIME:"+t;
+    if(t<=0)
+     {clearInterval(tm);
+      submitquestion();}
+      },1000);
+ }
+function submitquestion() 
+{
+   clearInterval(tm);
+  updateanswer();
+  var score = 0,i;
+  for (i=0;i< quizdata.length;i++) {
+  if (answer[i] == quizdata[i].correct) {
+  score++;
+  }}
+   document.getElementById("question").innerHTML="QUIZ COMPLETED!";
+   document.getElementById("option").innerHTML="";
+   document.getElementById("buttonbox").style.display="none";
+   document.getElementById("result").innerHTML=`
+   <h3>Name : ${name}</h3>
+   <h3>Father Name : ${fathername}</h3>
+   <h2>Score: ${score}/${quizdata.length}</h2>`;
+   }
+ 
+</script>
+</body>
+</html>
