@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>
+Evm Machine</title>
+<style>
+input{
+width:60%;
+height:40px;
+border-radius:5px;
+
+}
+body{
+font-size:25px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color:pink;
+  }
+ .jsbuttonbox {
+ background-color:aqua;
+ width: 95%; 
+ text-align: left;
+
+ }
+ .votebutton{
+ background-color:green;}
+ 
+</style>
+</head>
+<body>
+<center><h2>Electronic Voting Machine</h2></center>
+<center><div id="numbox">
+<label><b>Enter number of candidate</b></label><br><br>
+<input type="number" id="numcd"><br><br><br>
+<button onclick="cd_entery();">START</button>
+</div></center>
+
+<center><div id="detailbox" style="display:none;">
+<h3>Enter <span id="index">1</span> candidate detail</h3>
+<label><input type="text" id="name" placeholder="Enter name:"></label><br><br>
+<label><input type="text" id="party" placeholder="Enter party:"></label><br><br>
+<label><input type="text" id="symbol" placeholder="Enter symbol:"></label><br><br>
+<button onclick="save_entery();">submit candidate</button>
+</div></center>
+
+<center><div id="votebox" style="display:none;">
+<h4>Press button for given vote</h4>
+<div id="votearea"></div><br><br>
+<button onclick="cd_result();">result</button>
+</div></center>
+
+<div id="resultbox" style="display:none;">
+<center><h4>Voting Result </h4></center>
+</div>
+</body>
+<script>
+var totalcd,cdindex=0
+var cddetail=[];
+var cdvote=[];
+var n,p,s;
+function cd_entery(){
+totalcd=parseInt(document.getElementById("numcd").value);
+if(!totalcd || totalcd<2)
+{alert("minimum 2 candidate");
+return;}
+document.getElementById("numbox").style.display="none";
+document.getElementById("detailbox").style.display="block";
+document.getElementById("index").innerHTML=cdindex+1;
+}
+function save_entery(){
+n=document.getElementById("name").value;
+p=document.getElementById("party").value;
+s=document.getElementById("symbol").value;
+if(!n || !p || !s)
+{alert("please fill all field");
+return;}
+cddetail.push({n,p,s});
+cdvote.push(0);
+cdindex++;
+if(cdindex<totalcd)
+{document.getElementById("index").innerHTML=cdindex+1;
+document.getElementById("name").value="";
+document.getElementById("party").value="";
+document.getElementById("symbol").value="";
+}
+else{
+document.getElementById("detailbox").style.display="none";
+start_vote();
+}
+}
+function start_vote(){
+var i;
+document.getElementById("votebox").style.display="block";
+for(i=0;i<totalcd;i++)
+{document.getElementById("votearea").innerHTML+=`
+<div class="jsbuttonbox">
+${cddetail[i].n} (${cddetail[i].p}) &emsp;&emsp;&emsp;&emsp;&emsp;
+<button onclick="voting(${i});" class="votebutton">${cddetail[i].s}</button>
+</div><br>`;
+}
+
+}
+function voting(vt){
+cdvote[vt]++;
+alert("vote successfully");
+}
+function cd_result(){
+var i;
+var win=[];
+var maxvote=Math.max(...cdvote);
+document.getElementById("votebox").style.display="none";
+document.getElementById("resultbox").style.display="block";
+for(i=0;i<totalcd;i++)
+{if(maxvote==cdvote[i])
+{win.push(cddetail[i].n);}
+document.getElementById("resultbox").innerHTML+=`
+<div>
+<strong>Name:</strong>${cddetail[i].n}<br> 
+<strong>Part:</strong>${cddetail[i].p} <br>
+<strong>Symbol:</strong>${cddetail[i].s}<br>
+<strong>Vote:</strong>${cdvote[i]}
+</div><br>`;
+}
+document.getElementById("resultbox").innerHTML+=`
+<Strong>winner:</strong>${win.join(", ")}`;
+
+}
+</script>
+</html>
